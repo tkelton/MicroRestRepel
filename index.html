@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repelling Sentences</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            color: #fff; 
+            font-family: sans-serif;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .moving-text {
+            position: absolute;
+            font-size: 24px;
+            white-space: nowrap;
+            display: block;
+            transition: transform 0.1s ease-out;
+        }
+
+        #sentence1 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #sentence2 {
+            top: 5%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+        }
+
+        #sentence3 {
+            top: 95%;
+            left: 1%;
+            transform: translate(0%, 0%);
+        }
+
+        #sentence4 {
+            top: 95%;
+            left: 95%;
+            transform: translate(-100%, -100%);
+        }
+
+        #sentence5 {
+            top: 95%;
+            left: 50%;
+            transform: translate(-50%, 0%);
+        }
+    </style>
+</head>
+<body>
+    <div class="moving-text" id="sentence1" style="top: 50%; left: 50%;">24 workers have not trained data for 17 hrs and 3 mins</div>
+    <div class="moving-text" id="sentence2" style="top: 1%; left: 45%;">MICROREST</div>
+    <div class="moving-text" id="sentence3" style="top: 95%; left: 1%;">Donate</div>
+    <div class="moving-text" id="sentence4" style="top: 95%; left: 95%;">About</div>
+    <div class="moving-text" id="sentence5" style="top: 95%; left: 50%;">Rest your mouse anywhere in the grid</div>
+    <script>
+        const sentences = document.querySelectorAll('#sentence2, #sentence3, #sentence4');
+        const repulsionDistance = 200; // Distance within which sentences start to repel
+
+        function updatePositions(mouseX, mouseY) {
+            sentences.forEach(sentence => {
+                const rect = sentence.getBoundingClientRect();
+                const sentenceX = rect.left + rect.width / 4;
+                const sentenceY = rect.top + rect.height / 4;
+                const dx = sentenceX - mouseX;
+                const dy = sentenceY - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < repulsionDistance) {
+                    const maxDistance = repulsionDistance;
+                    const repelStrength = Math.max(0, (maxDistance - distance) / maxDistance);
+
+                    const moveX = dx / distance * repelStrength * 50;
+                    const moveY = dy / distance * repelStrength * 50;
+
+                    sentence.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                } else {
+                    sentence.style.transform = `translate(0, 0)`; // Reset transform if outside repulsion area
+                }
+            });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            updatePositions(e.clientX, e.clientY);
+        });
+    </script>
+</body>
+</html>
+
+
+
